@@ -1,0 +1,105 @@
+{
+    "api": {
+        "names": [
+            "Wooden Hotel",
+            "Beautiful place",
+            "Island hotel",
+            "Sea luxury location",
+            "Suite home hotel",
+            "Happy holiday",
+            "Capsule hotel",
+            "Nature hostel"
+        ],
+        "descriptions": [
+            "Ut laboriosam perferendis aut consectetur animi et odio enim est libero voluptatum in voluptatum soluta vel ipsam consequuntur.",
+            "Et aspernatur totam non beatae laudantium in obcaecati dolorem hic obcaecati labore ex saepe nobis.",
+            "Ut neque molestiae est quaerat commodi qui numquam iure! Quo corrupti corrupti ex dolor incidunt in voluptatum tempora.",
+            "Aut sunt quia sit fugit expedita sit sint reiciendis rem doloremque aliquid.",
+            "Est voluptatem voluptatem ut repellendus omnis eum quia sunt ut fugit ipsam ea cupiditate earum sit quia fuga ea nesciunt doloribus!",
+            "Aut dolor iusto est voluptates error id Quis deserunt. Non sapiente corrupti non maxime galisum et exercitationem officiis aut perferendis ipsum.",
+            "Hic quod facere et ipsam dolores est quas laboriosam vel consequuntur dolor et magnam molestiae et vero officia.",
+            "Et veniam ratione ea molestiae autem et tempora minima et iure nihil et neque repellendus non tempora molestias."
+        ],
+        "cities": [
+            "Paris",
+            "Cologne",
+            "Brussels",
+            "Amsterdam",
+            "Hamburg",
+            "Dusseldorf"
+        ],
+        "types": [
+            "apartament",
+            "house",
+            "room",
+            "hotel"
+        ],
+        "facilities": [
+            "Breakfast",
+            "Air conditioning",
+            "Laptop friendly workspace",
+            "Baby seat",
+            "Washer",
+            "Towels",
+            "Fridge"
+        ],
+        "authorNames": [
+            "Max",
+            "Angelina",
+            "Mike",
+            "George",
+            "Mary"
+        ],
+        "emails": [
+            "lanoj83390@prolug.com",
+            "user23@mail.com",
+            "user34@mail.com",
+            "ann34@box.com",
+            "master@ya.com"
+        ],
+        "photos": [
+            "preview1.jpg",
+            "preview2.jpg",
+            "preview3.jpg",
+            "preview4.jpg",
+            "preview5.jpg",
+            "preview6.jpg",
+            "preview7.jpg"
+        ],
+        "avatars": [
+            "user1.jpg",
+            "user2.jpg",
+            "user3.jpg",
+            "user4.jpg",
+            "user5.jpg",
+            "user6.jpg",
+            "user7.jpg"
+        ],
+        "cityCoords": {
+            "Paris": {
+                "latitude": 48.85661,
+                "longitude:": 2.351499
+            },
+            "Cologne": {
+                "latitude": 50.938361,
+                "longitude:": 6.959974
+            },
+            "Brussels": {
+                "latitude": 50.846557,
+                "longitude:": 4.351697
+            },
+            "Amsterdam": {
+                "latitude": 52.370216,
+                "longitude:": 4.895168
+            },
+            "Hamburg": {
+                "latitude": 53.550341,
+                "longitude:": 10.000654
+            },
+            "Dusseldorf": {
+                "latitude": 51.225402,
+                "longitude:": 6.776314
+            }
+        }
+    }
+}
