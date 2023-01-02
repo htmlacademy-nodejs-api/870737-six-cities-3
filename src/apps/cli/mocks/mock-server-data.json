@@ -34,7 +34,7 @@
             "room",
             "hotel"
         ],
-        "facilities": [
+        "goods": [
             "Breakfast",
             "Air conditioning",
             "Laptop friendly workspace",
@@ -57,7 +57,7 @@
             "ann34@box.com",
             "master@ya.com"
         ],
-        "photos": [
+        "images": [
             "preview1.jpg",
             "preview2.jpg",
             "preview3.jpg",

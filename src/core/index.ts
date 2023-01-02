@@ -9,6 +9,7 @@ export * from './interfaces/city.interface';
 export * from './interfaces/comment.interface';
 export * from './interfaces/offer.interface';
 export * from './interfaces/user.interface';
+export * from './interfaces/coordinates.interface';
 
 
 /* UTILS */
