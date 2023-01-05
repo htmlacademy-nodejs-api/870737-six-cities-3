@@ -15,3 +15,5 @@ export * from './interfaces/coordinates.interface';
 /* UTILS */
 
 export { default as MessageConsole} from './utils/message-console.js';
+export { default as Randomizer } from './utils/randomizer.js';
+export { default as TSVDataParser } from './utils/tsv-data-parser.js';

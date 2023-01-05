@@ -15,7 +15,8 @@ const MIN_INT_COUNT = 1;
 const MIN_PASSWORD_LENGTH = 6;
 const MAX_PASSWORD_LENGTH = 12;
 export default class OfferGenerator implements IOfferGenerator {
-  constructor(private readonly mockOfferData: IOfferMockData) {}
+  constructor(private readonly mockOfferData: IOfferMockData) {
+  }
 
   public generateItem(): IOffer {
     const {
@@ -128,6 +129,6 @@ export default class OfferGenerator implements IOfferGenerator {
       commentsCount.toString(),
       coordinates.latitude.toString(),
       coordinates.longitude.toString()
-    ].join('/t');
+    ].join('\t');
   }
 }
