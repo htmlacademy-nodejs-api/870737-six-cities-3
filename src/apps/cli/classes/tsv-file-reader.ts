@@ -1,92 +1,48 @@
-import chalk from 'chalk';
-import { readFileSync } from 'fs';
-import util from 'util';
-import { ApartamentTypes, Facilities, IOffer } from '../../../core/index.js';
-import { IFileReader } from '../interfaces/file-reader.js';
+import EventEmitter from 'events';
+import MessageConsole from '../../../core/utils/message-console.js';
+import { IFileReader } from '../interfaces/file-reader.interface.js';
+import { createReadStream } from 'fs';
 
 
-export default class TSVFileReader implements IFileReader {
-  private rawData = '';
-  private customPrintColor = '#68228b';
+export default class TSVFileReader extends EventEmitter implements IFileReader {
 
-  constructor(public filePath: string) { }
-
-  public read(): void {
-    this.rawData = readFileSync(this.filePath, { encoding: 'utf8' });
+  constructor(public filePath: string) {
+    super();
   }
 
-  public parseData(): IOffer[] {
-    if (!this.rawData) {
-      return [];
-    }
+  public async read(): Promise<void> {
+    const readStream = createReadStream(this.filePath, {
+      highWaterMark: 16384,
+      encoding: 'utf-8',
+      autoClose: true
+    });
+    let importedRecordsCount = 0;
+    let endLinePosition = -1;
+    let readeableLine = '';
 
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim() !== '')
-      .map((line) => line.split('\t'))
-      .map((
-        [
-          name,
-          description,
-          createdDate,
-          cityName,
-          cityLatitude,
-          cityLongitude,
-          previewImage,
-          photos,
-          isPremium,
-          isFavorite,
-          rate,
-          type,
-          roomsCount,
-          guestCount,
-          authorName,
-          authorEmail,
-          authorAvatar,
-          authorPassword,
-          isPro,
-          price,
-          facilities,
-          commentsCount,
-          latitude,
-          longitude
-        ]) => ({
-        name,
-        description,
-        createdDate,
-        city: {
-          name: cityName,
-          coordinates: {
-            latitude: Number.parseFloat(cityLatitude),
-            longitude: Number.parseFloat(cityLongitude)
-          }
-        },
-        previewImage,
-        photos: photos.split(';') as string[],
-        isPremium: Boolean(isPremium),
-        isFavorite: Boolean(isFavorite),
-        rate: Number(rate),
-        type: type as ApartamentTypes,
-        roomsCount: Number.parseInt(roomsCount, 10),
-        guestCount: Number.parseInt(guestCount, 10),
-        author: {
-          name: authorName,
-          email: authorEmail,
-          avatar: authorAvatar,
-          password: authorPassword,
-          isPro: Boolean(isPro)
-        },
-        price: Number.parseInt(price, 10),
-        facilities: facilities.split(';') as Facilities[],
-        commentsCount: Number.parseInt(commentsCount, 10),
-        coordinates: {
-          latitude: Number.parseFloat(latitude),
-          longitude: Number.parseFloat(longitude)
-        }
-      }));
-  }
 
-  public printItem(offer: IOffer): void {
-    console.log(chalk.hex(this.customPrintColor)(util.inspect(offer, {colors:true, depth:null})));
+    readStream.on('data', (chunk: Buffer) => {
+      readeableLine += chunk.toString();
+      while(readeableLine.indexOf('\n') >= 0) {
+        endLinePosition = readeableLine.indexOf('\n');
+        const record: string = readeableLine.slice(0, endLinePosition + 1);
+        readeableLine = readeableLine.slice(++endLinePosition);
+        importedRecordsCount++;
+        this.emit('record', record);
+      }
+
+    });
+
+    readStream.on('error', (err) => {
+      MessageConsole.error(`Error on read file ${this.filePath}`);
+      console.log(err);
+    });
+
+    readStream.on('end', () => {
+      if (importedRecordsCount) {
+        this.emit('end', importedRecordsCount);
+      }
+    });
+
   }
 }
