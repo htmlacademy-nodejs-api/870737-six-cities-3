@@ -1,13 +1,12 @@
 import { ApartamentTypes } from '../enums/apartaments-type.enum';
-import { Facilities } from '../enums/facilities.enum';
 import { ICity } from './city.interface';
-import { ICoordinates } from './coordinates.interface';
+import { IFacility } from './facility.interface';
 import { IUser } from './user.interface';
 
 export interface IOffer {
     name: string;
     description: string;
-    createdDate: string;
+    createdAt: string;
     city: ICity;
     previewImage: string;
     photos: string[];
@@ -19,7 +18,8 @@ export interface IOffer {
     guestCount: number;
     author: IUser;
     price: number;
-    facilities: Facilities[];
+    facilities: IFacility[];
     commentsCount: number;
-    coordinates: ICoordinates;
+    latitude: number;
+    longitude: number;
 }

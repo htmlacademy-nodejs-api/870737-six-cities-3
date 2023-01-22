@@ -1,7 +1,6 @@
 /* ENUMS */
 
 export * from './enums/apartaments-type.enum';
-export * from './enums/facilities.enum';
 
 /* INTERFACES */
 
@@ -9,7 +8,7 @@ export * from './interfaces/city.interface';
 export * from './interfaces/comment.interface';
 export * from './interfaces/offer.interface';
 export * from './interfaces/user.interface';
-export * from './interfaces/coordinates.interface';
+export * from './interfaces/facility.interface';
 export * from './interfaces/logger.interface';
 
 /* UTILS */

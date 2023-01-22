@@ -1,9 +1,9 @@
 import { ApartamentTypes } from '../enums/apartaments-type.enum';
-import { Facilities } from '../enums/facilities.enum';
+import { IOffer } from '../interfaces/offer.interface';
 
 
 export default class TSVDataParser {
-  public static parseRecord(record: string) {
+  public static parseRecord(record: string): IOffer {
     const data: string[] = record.replace('\n', '').split('\t');
     const [
       name,
@@ -34,13 +34,11 @@ export default class TSVDataParser {
     return {
       name,
       description,
-      createdDate,
+      createdAt: createdDate,
       city: {
         name: cityName,
-        coordinates: {
-          latitude: Number.parseFloat(cityLatitude),
-          longitude: Number.parseFloat(cityLongitude)
-        }
+        latitude: Number.parseFloat(cityLatitude),
+        longitude: Number.parseFloat(cityLongitude)
       },
       previewImage,
       photos: photos.split(';') as string[],
@@ -58,12 +56,10 @@ export default class TSVDataParser {
         isPro: Boolean(isPro)
       },
       price: Number.parseInt(price, 10),
-      facilities: facilities.split(';') as Facilities[],
+      facilities: facilities.split(';').map((element) => ({ name: element})),
       commentsCount: Number.parseInt(commentsCount, 10),
-      coordinates: {
-        latitude: Number.parseFloat(latitude),
-        longitude: Number.parseFloat(longitude)
-      }
+      latitude: Number.parseFloat(latitude),
+      longitude: Number.parseFloat(longitude)
     };
   }
 }

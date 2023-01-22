@@ -20,29 +20,23 @@ export default class TSVFileReader extends EventEmitter implements IFileReader {
     let endLinePosition = -1;
     let readeableLine = '';
 
-
-    readStream.on('data', (chunk: Buffer) => {
+    for await (const chunk of readStream) {
       readeableLine += chunk.toString();
       while(readeableLine.indexOf('\n') >= 0) {
         endLinePosition = readeableLine.indexOf('\n');
         const record: string = readeableLine.slice(0, endLinePosition + 1);
         readeableLine = readeableLine.slice(++endLinePosition);
         importedRecordsCount++;
-        this.emit('record', record);
+        await new Promise((resolve) => {
+          this.emit('record', record, resolve);
+        });
       }
-
-    });
+      this.emit('end', importedRecordsCount);
+    }
 
     readStream.on('error', (err) => {
       MessageConsole.error(`Error on read file ${this.filePath}`);
       console.log(err);
     });
-
-    readStream.on('end', () => {
-      if (importedRecordsCount) {
-        this.emit('end', importedRecordsCount);
-      }
-    });
-
   }
 }
