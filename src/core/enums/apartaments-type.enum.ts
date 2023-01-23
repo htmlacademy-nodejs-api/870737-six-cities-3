@@ -1,5 +1,5 @@
 export enum ApartamentTypes {
-    Apartament = 'apartment',
+    Apartament = 'apartament',
     House = 'house',
     Room = 'room',
     Hotel = 'hotel'

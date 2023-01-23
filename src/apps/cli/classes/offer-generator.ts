@@ -1,5 +1,4 @@
-import { ApartamentTypes, Facilities, ICity, IOffer, IUser } from '../../../core';
-import { ICoordinates } from '../../../core/';
+import { ApartamentTypes, ICity, IFacility, IOffer, IUser } from '../../../core';
 import Randomizer from '../../../core/utils/randomizer.js';
 import { IOfferGenerator } from '../interfaces/offer-generator.interface';
 import { IOfferMockData } from '../interfaces/offer-mock-data.interface';
@@ -36,7 +35,8 @@ export default class OfferGenerator implements IOfferGenerator {
     const cityName: string = Randomizer.getArrElem<string>(cities);
     const city: ICity = {
       name: Randomizer.getArrElem(cities),
-      coordinates: {...cityCoords[cityName]}
+      latitude: cityCoords[cityName].latitude,
+      longitude: cityCoords[cityName].longitude
     };
     const previewImage: string = Randomizer.getArrElem<string>(images);
     const photos: string[] = Randomizer.getArrElements<string>(images);
@@ -48,23 +48,21 @@ export default class OfferGenerator implements IOfferGenerator {
     const guestCount: number = Randomizer.getIntNumber(MIN_INT_COUNT, MAX_GUEST_COUNT);
     const author: IUser = {
       name: Randomizer.getArrElem<string>(authorNames),
-      email: Randomizer.getEmail(Randomizer.getArrElem<string>(emails)),
+      email: Randomizer.getArrElem<string>(emails),
       avatar: Randomizer.getArrElem<string>(avatars),
       password: Randomizer.getStr(Randomizer.getIntNumber(MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH)),
       isPro: Randomizer.getBoolean()
     };
     const price: number = Randomizer.getIntNumber(MIN_PRICE, MAX_PRICE);
-    const facilities: Facilities[] = Randomizer.getArrElements<Facilities>(goods);
+    const facilities: IFacility[] = Randomizer.getArrElements<string>(goods).map((element) => ({ name: element}));
     const createdDate: string = Randomizer.getISODate();
     const commentsCount: number = Randomizer.getIntNumber(MIN_INT_COUNT);
-    const coordinates: ICoordinates = {
-      latitude: city.coordinates.latitude + Randomizer.getCoordsDifference(),
-      longitude: city.coordinates.longitude + Randomizer.getCoordsDifference()
-    };
+    const latitude: number = city.latitude + Randomizer.getCoordsDifference();
+    const longitude: number = city.longitude + Randomizer.getCoordsDifference();
     return {
       name,
       description,
-      createdDate,
+      createdAt: createdDate,
       city,
       previewImage,
       photos,
@@ -78,7 +76,8 @@ export default class OfferGenerator implements IOfferGenerator {
       price,
       facilities,
       commentsCount,
-      coordinates
+      latitude,
+      longitude
     };
   }
 
@@ -88,7 +87,7 @@ export default class OfferGenerator implements IOfferGenerator {
     const {
       name,
       description,
-      createdDate,
+      createdAt: createdDate,
       city,
       previewImage,
       photos,
@@ -102,15 +101,16 @@ export default class OfferGenerator implements IOfferGenerator {
       price,
       facilities,
       commentsCount,
-      coordinates
+      latitude,
+      longitude
     }: IOffer = offer;
     return [
       name,
       description,
       createdDate,
       city.name,
-      city.coordinates.latitude.toString(),
-      city.coordinates.longitude.toString(),
+      city.latitude.toString(),
+      city.longitude.toString(),
       previewImage,
       photos.join(';'),
       isPremium,
@@ -125,10 +125,10 @@ export default class OfferGenerator implements IOfferGenerator {
       author.password,
       author.isPro.toString(),
       price,
-      facilities.join(';'),
+      facilities.map((element) => element.name ).join(';'),
       commentsCount.toString(),
-      coordinates.latitude.toString(),
-      coordinates.longitude.toString()
+      latitude.toString(),
+      longitude.toString()
     ].join('\t');
   }
 }

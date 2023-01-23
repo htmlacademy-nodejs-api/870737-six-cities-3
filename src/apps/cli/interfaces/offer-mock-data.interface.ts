@@ -1,11 +1,11 @@
-import { ApartamentTypes, Facilities } from '../../../core';
+import { ApartamentTypes } from '../../../core';
 
 export interface IOfferMockData {
     names: string[],
     descriptions: string[],
     cities: string[],
     types: ApartamentTypes[],
-    goods: Facilities[],
+    goods: string[],
     authorNames: string[],
     emails: string[],
     images: string[],

@@ -4,7 +4,6 @@ const MIN_NUM = 0;
 const MAX_NUM = 10;
 const MAX_BOOL = 1;
 const MIN_BOOL = 0;
-const STR_EMAIL_NUM = 5;
 const COORDS_MIN = -100;
 const COORDS_MAX = 100;
 const COORDS_STEP = 0.000001;
@@ -29,7 +28,7 @@ export default class Randomizer {
 
   public static getArrElements<T>(arr: T[]): T[] {
     const startPosition: number = Randomizer.getIntNumber(0, arr.length - 2);
-    const endPosition: number = Randomizer.getIntNumber(startPosition, arr.length - 1);
+    const endPosition: number = Randomizer.getIntNumber(startPosition + 1, arr.length - 1);
     return arr.slice(startPosition, endPosition);
   }
 
@@ -39,12 +38,6 @@ export default class Randomizer {
       resStr += CHARS.charAt(Randomizer.getIntNumber(0, strLength - 1));
     }
     return resStr;
-  }
-
-  public static getEmail(emailStr: string): string {
-    const emailArr: string[] = emailStr.split('@');
-    emailArr[0] += Randomizer.getStr(STR_EMAIL_NUM);
-    return emailArr.join('@');
   }
 
   public static getCoordsDifference(): number {
