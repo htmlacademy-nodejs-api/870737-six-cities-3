@@ -1,0 +1,606 @@
+openapi: 3.0.0
+info:
+  title: "API сервер веб приложения 6 городов"
+  version: "1.0.0"
+  description: "Список ресурсов и маршрутов API 6 городов"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: offers
+    description: Действия с объявлениями
+  - name: users
+    description: Действия с пользователем с пользователем
+  - name: comments
+    description: Действия с комментариями
+paths:
+  /users/register:
+    post:
+      summary: Регистрация пользователя
+      description: Выполняет регистрацию пользователя в системе на основе логина и пароля
+      tags:
+        - "users"
+      requestBody:
+        description: "Данные для создания нового пользователя"
+        content:
+          multipart/form-data:
+            schema: 
+              $ref: "#/components/schemas/createUser"          
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "409":
+          description: Conflict
+  /users/login:
+    post:
+      summary: Авторизация пользователя
+      description: Выполняет вход в закрытую часть приложения по логину и паролю
+      tags:
+        - "users"
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: "#/components/schemas/loginUser"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: 
+               $ref: "#/components/schemas/user"
+        "401":
+          description: Произошла ошибка при входе
+    get:
+      summary: Проверка авторизации пользователя
+      description: Проверяет авторизацию пользователя(токен)
+      tags:
+        - "users"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: 
+               $ref: "#/components/schemas/user"
+        "401":
+          description: Unauthorized
+  /users/logout:
+    delete:
+      summary: Выход из приложения
+      description: Выход из закрытой части приложения
+      tags:
+        - "users"
+      responses:
+        "204":
+          description: No content
+        "403":
+          description: Forbidden
+  /offers: 
+    get:
+      summary: "Получение предложений по аренде жилья"
+      description: "Возвращает по умолчанию 60 предожений по аренде жилья"
+      tags:
+        - "offers"
+      parameters:
+        - in: query
+          name: offset
+          description: Сколько предложений нужно пропустить перед тем как будет получен ответ
+          schema: 
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Ограничение на количество предложений
+          schema:
+            type: integer
+            default: 60
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+             schema:
+               type: array
+               items:
+                $ref: "#/components/schemas/offer"
+    post: 
+      summary: Создание предложения по аренде
+      description: Выполняется создание предложения по аренде жилья
+      tags:
+        - "offers"
+      requestBody:
+        content:
+          multipart/form-data:
+           schema:
+             $ref: "#/components/schemas/offerCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            applictaion/json:
+              schema:
+                $ref: "#/components/schemas/offerDetail"
+        "400":
+          description: Bad request
+        "403":
+          description: Forbidden
+    put: 
+      summary: Изменение предложения по аренде
+      description: Выполняется изменение предложения по аренде жилья
+      tags:
+        - "offers"
+      requestBody:
+          content:
+            multipart/form-data:
+              schema: 
+                $ref: "#/components/schemas/offerUpdate"
+      responses: 
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                 $ref: "#/components/schemas/offerDetail"
+          "400":
+            description: Bad request
+          "403":
+            description: Forbidden
+          "404":
+            description: Not found
+    delete:
+      summary: Удаление предложения по аренде
+      description: Выполняется удаление предложения по аренде жилья
+      tags:
+        - "offers"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/offerDelete"
+      responses:
+        "204":
+          description: No content
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+    patch:
+      summary: Перемещение/удаление предложения из избранного
+      description: Выполняется перемещение/удаление предложения из избранного
+      tags:
+        - "offers"
+      requestBody: 
+        content:
+          application/json:
+            schema:
+             $ref: "#/components/schemas/offerFavoriteStatus"
+      responses:
+        "200": 
+          description: OK
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+  /offers/{id}:
+    get:
+      summary: Получение детальной информации о предложении по аренде
+      description: Выполняется получение детальной информации о предложении по аренде
+      tags:
+        - "offers"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+             schema:
+               $ref: "#/components/schemas/offerDetail"
+        "404":
+          description: Not found
+  /offers/premium/{cityId}:
+    get:
+      summary: Получение премиальных предложений для города
+      description: Выполняется получение премиальных предложений для города
+      tags:
+        - "offers"
+      parameters:
+        - in: path
+          name: cityId
+          schema: 
+            type: string
+          required: true
+        - in: query
+          name: offset
+          description: Сколько предложений нужно пропустить перед тем как будет получен ответ
+          schema: 
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Ограничение на количество предложений
+          schema:
+            type: integer
+            default: 3
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/offer"
+        "404":
+          description: Not found
+  /offers/favorites:
+    get:
+     summary: Получение предложений добавленных в избранное
+     description: Выполняет получение предложений добавленных в избранное
+     tags:
+       - "offers"
+     parameters:
+        - in: query
+          name: offset
+          description: Сколько предложений нужно пропустить перед тем как будет получен ответ
+          schema: 
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Ограничение на количество предложений
+          schema:
+            type: integer
+            default: 50
+     responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/offer"
+        "401":
+          description: Unauthorized
+  /comments:
+    post:
+      summary: Создание комментария
+      description: Выполняет создание комментария о жилье
+      tags:
+        - "comments"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createComment"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+             schema:
+               $ref: "#/components/schemas/comment"
+        "403":
+           description: Forbidden
+  /comments/{offerId}:
+    get:
+     summary: Получение списка комментариев
+     description: Выполняет получение списка комментариев
+     tags:
+       - "comments"
+     parameters:
+        - in: query
+          name: offset
+          description: Сколько предложений нужно пропустить перед тем как будет получен ответ
+          schema: 
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Ограничение на количество предложений
+          schema:
+            type: integer
+            default: 50
+     responses:
+       "200":
+        description: OK
+        content:
+         application/json:
+           schema:
+             type: array
+             items:
+              $ref: "#/components/schemas/comment"
+       "404":
+          description: Not found
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+      required:
+        - "name"
+        - "email"
+        - "password"
+        - "isPro"
+      properties:
+        name:
+          type: string
+          example: Max
+        email:
+          type: string
+          example: max12@mail.com
+        password:
+          type: string
+          example: 12345
+        avatar:
+          type: string
+          format: binary
+          required:
+            - ""
+        isPro:
+          type: boolean
+    user: 
+      type: object
+      properties:
+        id: 
+         type: string
+         example: 6329c3d6a04ab1061c6425ea
+        email: 
+          type: string
+          example: max12@mail.com
+        avatar:
+          type: string
+          example: max.jpg
+        isPro:
+          type: boolean
+    loginUser:
+      type: object
+      required:
+        - "email"
+        - "password"
+      properties:
+        email:
+          type: string
+          example: max12@mail.com
+        password:
+          type: string
+          example: 12345
+    offer:
+      type: object
+      properties:
+          id:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+          price: 
+            type: integer
+          name:
+            type: string
+          type:
+            type: string
+          isFavorite:
+            type: boolean
+          createdAt:
+            type: string
+            format: date
+          city:
+              type: object
+              properties:
+               name: 
+                 type: string
+               latitude:
+                 type: number
+               longitude:
+                 type: number
+          previewImage:
+               type: string
+          isPremium:
+               type: boolean
+          rate:
+             type: number
+          commentsCount:
+             type: number
+          userId:
+             type: string
+          latitude:
+             type: number
+          longitude:
+             type: number
+    offerDetail:
+      type: object
+      properties:
+          id:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+          price: 
+            type: integer
+          name:
+            type: string
+          type:
+            type: string
+          isFavorite:
+            type: boolean
+          crearedAt:
+            type: string
+          city:
+              type: object
+              properties:
+               name: 
+                 type: string
+               latitude:
+                 type: number
+               longitude:
+                 type: number
+          previewImage:
+               type: string
+          isPremium:
+               type: boolean
+          rate:
+             type: number
+          commentsCount:
+             type: number
+          userId:
+             type: string
+          latitude:
+             type: number
+          longitude:
+             type: number
+          description:
+             type: string
+          photos:
+            type: array
+            items: 
+              type: string
+          roomsCount:
+              type: number
+          guestCount:
+              type: number
+          facilities:
+              type: array
+              items:
+                type: string
+    offerUpdate:
+      type: object
+      required:
+        - "id"
+      properties:
+          id: 
+            type: string
+          price: 
+            type: integer
+          name:
+            type: string
+          type:
+            type: string
+          isFavorite:
+            type: boolean
+          city:
+             type: string
+          previewImage:
+               type: string
+               format: binary
+          isPremium:
+               type: boolean
+          latitude:
+             type: number
+          longitude:
+             type: number
+          description:
+             type: string
+          photos:
+            type: array
+            items: 
+              type: string
+              format: binary
+          roomsCount:
+              type: number
+          guestCount:
+              type: number
+          facilities:
+              type: array
+              items:
+                type: string
+    offerCreate:
+      type: object
+      required:
+        - "price"
+        - "name"
+        - "type"
+        - "city"
+        - "previewImage"
+        - "isPremium"
+        - "latitude"
+        - "longitude"
+        - "description"
+        - "photos"
+        - "roomsCount"
+        - "guestCount"
+        - "facilities"
+
+      properties:
+          price: 
+            type: integer
+          name:
+            type: string
+          type:
+            type: string
+          isFavorite:
+            type: boolean
+          city:
+             type: string
+          previewImage:
+               type: string
+               format: binary
+          isPremium:
+               type: boolean
+          latitude:
+             type: number
+          longitude:
+             type: number
+          description:
+             type: string
+          photos:
+            type: array
+            items: 
+              type: string
+              format: binary
+          roomsCount:
+              type: number
+          guestCount:
+              type: number
+          facilities:
+              type: array
+              items:
+                type: string           
+    offerFavoriteStatus: 
+      type: object
+      properties:
+        id:
+         type: string
+        status: 
+          type: boolean
+    offerDelete: 
+      type: object
+      properties:
+        id: 
+          type: string
+    createComment:
+      type: object
+      properties:
+        offerId:
+          type: string
+        text:
+          type: string
+        rate:
+          type: number
+    comment:
+      type: object
+      properties:
+        id: 
+          type: string
+        createdAt:
+          type: string
+          format: date
+        offerId:
+          type: string
+        user: 
+          $ref: "#/components/schemas/user"
+        text:
+          type: string
+        rate: 
+          type: number
+        
+            
+
+        
+   
