@@ -1,5 +1,5 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { ApartamentTypes } from '../../../../../core/enums/apartaments-type.enum.js';
+import { ApartamentTypes } from '../../../../../core/enums/apartament-types.enum.js';
 import { CityEntity } from './city.entity.js';
 import { FacilityEntity } from './facility.entity.js';
 import { UserEntity } from './user.entity.js';

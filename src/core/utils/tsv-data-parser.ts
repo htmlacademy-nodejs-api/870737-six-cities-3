@@ -1,4 +1,4 @@
-import { ApartamentTypes } from '../enums/apartaments-type.enum';
+import { ApartamentTypes } from '../enums/apartament-types.enum';
 import { IOffer } from '../interfaces/offer.interface';
 
 
