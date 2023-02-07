@@ -1,4 +1,4 @@
-import { ApartamentTypes } from '../enums/apartaments-type.enum';
+import { ApartamentTypes } from '../enums/apartament-types.enum';
 import { ICity } from './city.interface';
 import { IFacility } from './facility.interface';
 import { IUser } from './user.interface';

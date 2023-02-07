@@ -18,7 +18,7 @@ export default class Randomizer {
   }
 
   public static getBoolean(): boolean {
-    return !!Randomizer.getIntNumber(MIN_BOOL, MAX_BOOL);
+    return !!Math.round(Randomizer.getIntNumber(MIN_BOOL, MAX_BOOL));
   }
 
   public static getArrElem<T>(arr: T[]): T {

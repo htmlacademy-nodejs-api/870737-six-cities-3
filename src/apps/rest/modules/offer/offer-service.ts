@@ -1,11 +1,15 @@
-import { types } from '@typegoose/typegoose';
+import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 import { ILogger } from '../../../../core';
 import { Component } from '../../common/const/component.js';
 import { CreateOfferDto } from '../../common/database/dto/create-offer-dto.js';
+import { UpdateOfferDto } from '../../common/database/dto/update-offer-dto.js';
 import { OfferEntity } from '../../common/database/entities/offer.entity';
 import { IOfferService } from './offer-service.interface';
 
+const DEFAULT_LIMIT = 60;
+const DEFAULT_OFFSET = 0;
+const DEFAULT_PREMIUM_LIMIT = 3;
 @injectable()
 export class OfferService implements IOfferService {
   constructor(
@@ -13,13 +17,281 @@ export class OfferService implements IOfferService {
         @inject(Component.OfferModel) private offerModel: types.ModelType<OfferEntity>,
   ) {}
 
+  public async find(offset: number = DEFAULT_OFFSET, limit: number = DEFAULT_LIMIT): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'city',
+            foreignField: '_id',
+            as: 'city',
+            pipeline: [
+              {
+                $project: {
+                  '_id': 0,
+                  'createdAt': 0,
+                  'updatedAt': 0,
+                  '__v': 0
+                }
+              }
+            ]
+          }
+        }, {
+          $unwind: {
+            path: '$city'
+          }
+        }, {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments'
+          }
+        }, {
+          $project: {
+            _id: 1,
+            name: 1,
+            type: 1,
+            isFavorite: 1,
+            createdAt: 1,
+            city: 1,
+            previewImage: 1,
+            isPremium: 1,
+            rate: {
+              $avg: '$comments.rate'
+            },
+            commentsCount: {
+              $size: '$comments'
+            }
+          }
+        }
+      ])
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
+
+  public findPremium(cityName: string): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.aggregate(
+      [
+        {
+          $lookup: {
+            from: 'cities',
+            localField: 'city',
+            foreignField: '_id',
+            as: 'city',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0,
+                  createdAt: 0,
+                  updatedAt: 0,
+                  __v: 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          $unwind: {
+            path: '$city'
+          }
+        },
+        {
+          $match: {
+            'city.name': cityName,
+            'isPremium': true
+          }
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            type: 1,
+            isFavorite: 1,
+            createdAt: 1,
+            city: 1,
+            previewImage: 1,
+            isPremium: 1,
+            rate: {
+              '$avg': '$comments.rate'
+            },
+            commentsCount: {
+              '$size': '$comments'
+            }
+          }
+        }
+      ]
+    ).skip(DEFAULT_PREMIUM_LIMIT).exec();
+  }
+
+  public findFavorite(userId: string, offset: number, limit: number): Promise<DocumentType<OfferEntity, types.BeAnObject>[]> {
+    return this.offerModel
+      .aggregate([
+        {
+          $match: {
+            authorId: userId,
+            isFavorite: true
+          },
+          $lookup: {
+            from: 'cities',
+            localField: 'city',
+            foreignField: '_id',
+            as: 'city',
+            pipeline: [
+              {
+                $project: {
+                  '_id': 0,
+                  'createdAt': 0,
+                  'updatedAt': 0,
+                  '__v': 0
+                }
+              }
+            ]
+          }
+        }, {
+          $unwind: {
+            path: '$city'
+          }
+        }, {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments'
+          }
+        }, {
+          $project: {
+            _id: 1,
+            name: 1,
+            type: 1,
+            isFavorite: 1,
+            createdAt: 1,
+            city: 1,
+            previewImage: 1,
+            isPremium: 1,
+            rate: {
+              $avg: '$comments.rate'
+            },
+            commentsCount: {
+              $size: '$comments'
+            }
+          }
+        }
+      ])
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
+
   public async create(dto: CreateOfferDto): Promise<types.DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`Offer ${dto.name} record created`);
     return result;
   }
 
+  public async updateById(dto: UpdateOfferDto, offerId: string): Promise<types.DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndUpdate(offerId, dto, {new: true}).exec();
+  }
+
+  public async deleteById(offerId: string): Promise<types.DocumentType<OfferEntity, types.BeAnObject> | null> {
+    return this.offerModel.findByIdAndDelete(offerId).exec();
+  }
+
   public async findById(offerId: string): Promise<types.DocumentType<OfferEntity> | null> {
-    return await this.offerModel.findById(offerId).exec();
+    const offersById = await this.offerModel.aggregate(
+      [
+        {
+          $match: {
+            _id: offerId
+          }
+        }, {
+          $lookup: {
+            from: 'cities',
+            localField: 'city',
+            foreignField: '_id',
+            as: 'city',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0,
+                  createdAt: 0,
+                  updatedAt: 0,
+                  __v: 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          $unwind: {
+            path: '$city'
+          }
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments'
+          }
+        },
+        {
+          $lookup: {
+            from: 'facilities',
+            localField: 'facilities',
+            foreignField: '_id',
+            as: 'facilities',
+            pipeline: [
+              {
+                $project: {
+                  '_id': 1,
+                  'name': 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          '$project': {
+            '_id': 1,
+            'name': 1,
+            'type': 1,
+            'isFavorite': 1,
+            'createdAt': 1,
+            'city': 1,
+            'previewImage': 1,
+            'isPremium': 1,
+            'facilities': 1,
+            'description': 1,
+            'photos': 1,
+            'roomsCount': 1,
+            'guestCount': 1,
+            'authorId': 1,
+            'latitude': 1,
+            'longitude': 1,
+            'rate': {
+              '$avg': '$comments.rate'
+            },
+            'commentsCount': {
+              '$size': '$comments'
+            }
+          }
+        }
+      ]
+    );
+    if (offersById && offersById?.length) {
+      return offersById[0];
+    }
+    return null;
   }
 }

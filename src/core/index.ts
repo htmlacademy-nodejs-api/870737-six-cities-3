@@ -1,6 +1,6 @@
 /* ENUMS */
 
-export * from './enums/apartaments-type.enum';
+export * from './enums/apartament-types.enum';
 
 /* INTERFACES */
 
