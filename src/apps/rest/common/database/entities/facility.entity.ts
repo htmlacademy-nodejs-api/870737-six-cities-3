@@ -5,7 +5,7 @@ import {
   modelOptions
 } from '@typegoose/typegoose';
 
-import { IFacility } from '../../../../../core';
+import { IFacility } from '../../../../../core/interfaces/facility.interface.js';
 
 export interface FacilityEntity extends defaultClasses.Base {
 }

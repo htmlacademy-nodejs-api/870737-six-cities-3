@@ -1,6 +1,6 @@
 import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
-import { ILogger } from '../../../../core';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 import { Component } from '../../common/const/component.js';
 import { CreateCityDto } from '../../common/database/dto/create-city-dto.js';
 import { CityEntity } from '../../common/database/entities/city.entity';

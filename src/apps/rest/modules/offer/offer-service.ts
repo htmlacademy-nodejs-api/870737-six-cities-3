@@ -1,6 +1,7 @@
-import { DocumentType, types } from '@typegoose/typegoose';
+import { DocumentType, mongoose, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
-import { ILogger } from '../../../../core';
+import { IDocumentExistService } from '../../../../core/interfaces/document-exists.interface.js';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 import { Component } from '../../common/const/component.js';
 import { CreateOfferDto } from '../../common/database/dto/create-offer-dto.js';
 import { UpdateOfferDto } from '../../common/database/dto/update-offer-dto.js';
@@ -11,13 +12,13 @@ const DEFAULT_LIMIT = 60;
 const DEFAULT_OFFSET = 0;
 const DEFAULT_PREMIUM_LIMIT = 3;
 @injectable()
-export class OfferService implements IOfferService {
+export class OfferService implements IOfferService, IDocumentExistService {
   constructor(
         @inject(Component.ILogger) private logger: ILogger,
         @inject(Component.OfferModel) private offerModel: types.ModelType<OfferEntity>,
   ) {}
 
-  public async find(offset: number = DEFAULT_OFFSET, limit: number = DEFAULT_LIMIT): Promise<DocumentType<OfferEntity>[]> {
+  public async find(offset?: number, limit?: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .aggregate([
         {
@@ -50,7 +51,7 @@ export class OfferService implements IOfferService {
           }
         }, {
           $project: {
-            _id: 1,
+            id: 1,
             name: 1,
             type: 1,
             isFavorite: 1,
@@ -67,8 +68,8 @@ export class OfferService implements IOfferService {
           }
         }
       ])
-      .skip(offset)
-      .limit(limit)
+      .skip(offset || DEFAULT_OFFSET)
+      .limit(limit || DEFAULT_LIMIT)
       .exec();
   }
 
@@ -203,6 +204,16 @@ export class OfferService implements IOfferService {
     return this.offerModel.findByIdAndUpdate(offerId, dto, {new: true}).exec();
   }
 
+  public async exists(id: string): Promise<boolean> {
+    const offer = await this.offerModel.findById(id);
+
+    if (offer) {
+      return true;
+    }
+
+    return false;
+  }
+
   public async deleteById(offerId: string): Promise<types.DocumentType<OfferEntity, types.BeAnObject> | null> {
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
@@ -212,7 +223,7 @@ export class OfferService implements IOfferService {
       [
         {
           $match: {
-            _id: offerId
+            _id: new mongoose.Types.ObjectId(offerId)
           }
         }, {
           $lookup: {
@@ -239,6 +250,19 @@ export class OfferService implements IOfferService {
         },
         {
           $lookup: {
+            from: 'users',
+            localField: 'authorId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: {
+            path: '$user'
+          }
+        },
+        {
+          $lookup: {
             from: 'comments',
             localField: '_id',
             foreignField: 'offerId',
@@ -254,7 +278,7 @@ export class OfferService implements IOfferService {
             pipeline: [
               {
                 $project: {
-                  '_id': 1,
+                  'id': 1,
                   'name': 1
                 }
               }
@@ -276,7 +300,7 @@ export class OfferService implements IOfferService {
             'photos': 1,
             'roomsCount': 1,
             'guestCount': 1,
-            'authorId': 1,
+            'user': 1,
             'latitude': 1,
             'longitude': 1,
             'rate': {

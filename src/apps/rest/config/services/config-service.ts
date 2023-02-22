@@ -1,6 +1,6 @@
 import { config, DotenvConfigOutput } from 'dotenv';
 import { inject, injectable } from 'inversify';
-import { ILogger } from '../../../../core';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 import { Component } from '../../common/const/component.js';
 import { configSchema } from '../config-schema.js';
 import { IConfigSchema } from '../interfaces/config-schema.interface';

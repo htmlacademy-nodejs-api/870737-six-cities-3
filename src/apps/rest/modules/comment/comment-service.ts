@@ -1,6 +1,6 @@
 import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types.js';
 import { inject } from 'inversify';
-import { ILogger } from '../../../../core';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 import { Component } from '../../common/const/component.js';
 import { CreateCommentsDto } from '../../common/database/dto/create-comment-dto.js';
 import { CommentEntity } from '../../common/database/entities/comment.entity';

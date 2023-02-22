@@ -3,7 +3,7 @@ import { Component } from '../../common/const/component.js';
 import { FacilityService } from './facility-service.js';
 import { IFacilityService } from './facility-service.interface';
 import { types } from '@typegoose/typegoose';
-import { FacilityEntity, FacilityModel } from '../../common/database/entities/facility.entity';
+import { FacilityEntity, FacilityModel } from '../../common/database/entities/facility.entity.js';
 
 const facilityContainer = new Container();
 

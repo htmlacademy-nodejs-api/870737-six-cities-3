@@ -1,4 +1,4 @@
-import { ApartamentTypes } from '../../../../../core';
+import { ApartamentTypes } from '../../../../../core/enums/apartament-types.enum.js';
 
 export class CreateOfferDto {
   name!: string;

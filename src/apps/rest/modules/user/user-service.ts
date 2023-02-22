@@ -5,7 +5,8 @@ import { UserEntity } from '../../common/database/entities/user.entity.js';
 import { IUserService } from './user-service.interface';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../common/const/component.js';
-import { ILogger } from '../../../../core/index.js';
+import { LoginUserDto } from '../../common/database/dto/login-user-dto.js';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 
 @injectable()
 export default class UserService implements IUserService {
@@ -34,5 +35,18 @@ export default class UserService implements IUserService {
     }
 
     return this.create(dto, salt);
+  }
+
+  public async verify(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.findByEmail(dto.email);
+    if (!user) {
+      return null;
+    }
+
+    if (user.verifyPassword(dto.password, salt)) {
+      return user;
+    }
+
+    return null;
   }
 }

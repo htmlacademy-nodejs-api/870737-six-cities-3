@@ -1,7 +1,7 @@
 import { DocumentType } from '@typegoose/typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types.js';
 import { inject, injectable } from 'inversify';
-import { ILogger } from '../../../../core';
+import { ILogger } from '../../../../core/interfaces/logger.interface.js';
 import { Component } from '../../common/const/component.js';
 import { CreateFacilityDto } from '../../common/database/dto/create-facility-dto.js';
 import { FacilityEntity } from '../../common/database/entities/facility.entity';

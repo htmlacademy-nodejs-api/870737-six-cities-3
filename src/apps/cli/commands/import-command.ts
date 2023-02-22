@@ -1,4 +1,4 @@
-import { IFacility, ILogger, IOffer } from '../../../core';
+
 import TSVDataParser from '../../../core/utils/tsv-data-parser.js';
 import MessageConsole from '../../../core/utils/message-console.js';
 import TSVFileReader from '../classes/tsv-file-reader.js';
@@ -20,6 +20,9 @@ import { CityModel } from '../../rest/common/database/entities/city.entity.js';
 import DatabaseConnectionService from '../../rest/common/database/database-connection-service.js';
 import DatabaseHelper from '../../../core/utils/database-helper.js';
 import { DEFAULT_DATABASE_PORT } from '../../rest/common/const/default-database-port.const.js';
+import { IFacility } from '../../../core/interfaces/facility.interface.js';
+import { ILogger } from '../../../core/interfaces/logger.interface.js';
+import { IOffer } from '../../../core/interfaces/offer.interface.js';
 
 export default class ImportCommand implements ICliCommand {
   public readonly name = '--import';

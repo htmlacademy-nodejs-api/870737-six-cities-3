@@ -6,6 +6,8 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:4000
 tags:
   - name: offers
     description: Действия с объявлениями
@@ -129,7 +131,7 @@ paths:
           description: Bad request
         "403":
           description: Forbidden
-    put: 
+    patch: 
       summary: Изменение предложения по аренде
       description: Выполняется изменение предложения по аренде жилья
       tags:
@@ -169,7 +171,8 @@ paths:
           description: Forbidden
         "404":
           description: Not found
-    patch:
+  /offers/status:
+    post:
       summary: Перемещение/удаление предложения из избранного
       description: Выполняется перемещение/удаление предложения из избранного
       tags:
@@ -207,7 +210,7 @@ paths:
                $ref: "#/components/schemas/offerDetail"
         "404":
           description: Not found
-  /offers/premium/{cityId}:
+  /offers/premium/{cityName}:
     get:
       summary: Получение премиальных предложений для города
       description: Выполняется получение премиальных предложений для города
@@ -215,7 +218,7 @@ paths:
         - "offers"
       parameters:
         - in: path
-          name: cityId
+          name: cityName
           schema: 
             type: string
           required: true
