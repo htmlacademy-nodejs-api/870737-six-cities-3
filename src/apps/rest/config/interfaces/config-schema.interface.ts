@@ -6,5 +6,6 @@ export interface IConfigSchema {
     DB_PASSWORD: string;
     DB_PORT: number;
     DB_NAME: string;
+    JWT_SECRET: string;
 }
 

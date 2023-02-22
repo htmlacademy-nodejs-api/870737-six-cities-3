@@ -4,7 +4,7 @@ import {
   prop,
   modelOptions
 } from '@typegoose/typegoose';
-import { IUser } from '../../../../../core';
+import { IUser } from '../../../../../core/interfaces/user.interface.js';
 import DatabaseHelper from '../../../../../core/utils/database-helper.js';
 
 export interface UserEntity extends defaultClasses.Base {}
@@ -46,6 +46,11 @@ export class UserEntity extends defaultClasses.TimeStamps implements IUser {
 
   public getPassword(): string {
     return this.password;
+  }
+
+  public verifyPassword(password: string, salt: string) {
+    const hashPassword = DatabaseHelper.createSha256(password, salt);
+    return hashPassword === this.password;
   }
 
 }

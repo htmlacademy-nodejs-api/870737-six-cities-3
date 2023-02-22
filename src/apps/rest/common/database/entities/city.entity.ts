@@ -1,5 +1,5 @@
 import { defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
-import { ICity } from '../../../../../core';
+import { ICity } from '../../../../../core/interfaces/city.interface.js';
 
 
 export interface CityEntity extends defaultClasses.Base {

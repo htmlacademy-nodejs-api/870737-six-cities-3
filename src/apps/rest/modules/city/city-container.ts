@@ -1,7 +1,7 @@
 import { types } from '@typegoose/typegoose';
 import { Container } from 'inversify';
 import { Component } from '../../common/const/component.js';
-import { CityEntity, CityModel } from '../../common/database/entities/city.entity';
+import { CityEntity, CityModel } from '../../common/database/entities/city.entity.js';
 import { ICityService } from './city-service.interface';
 import { CityService } from './city-service.js';
 

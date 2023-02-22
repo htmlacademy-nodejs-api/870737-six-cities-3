@@ -46,5 +46,11 @@ export const configSchema = convict<IConfigSchema>({
     format: String,
     env: 'DB_NAME',
     default: 'test'
+  },
+  JWT_SECRET: {
+    doc: 'Secret for sign JWT',
+    format: String,
+    env: 'JWT_SECRET',
+    default: null
   }
 });

@@ -1,4 +1,8 @@
-import { ApartamentTypes, ICity, IFacility, IOffer, IUser } from '../../../core';
+import { ApartamentTypes } from '../../../core/enums/apartament-types.enum.js';
+import { ICity } from '../../../core/interfaces/city.interface.js';
+import { IFacility } from '../../../core/interfaces/facility.interface.js';
+import { IOffer } from '../../../core/interfaces/offer.interface.js';
+import { IUser } from '../../../core/interfaces/user.interface.js';
 import Randomizer from '../../../core/utils/randomizer.js';
 import { IOfferGenerator } from '../interfaces/offer-generator.interface';
 import { IOfferMockData } from '../interfaces/offer-mock-data.interface';
